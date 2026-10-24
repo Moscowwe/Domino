@@ -1,0 +1,331 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-navy-950: #090B12;
+  --color-navy-900: #0D1220;
+  --color-navy-800: #111827;
+  --color-panel:    rgba(255,255,255,0.04);
+  --color-border:   rgba(255,255,255,0.07);
+  --color-cyan:     #00E5FF;
+  --color-gold:     #FFC857;
+  --color-danger:   #FF5A5F;
+  --color-muted:    #94A3B8;
+  /* Legacy compat */
+  --color-cyber-dark:   #090B12;
+  --color-cyber-card:   rgba(13, 18, 32, 0.80);
+  --color-cyber-accent: #00E5FF;
+  --color-cyber-neon:   #00E5FF;
+  --color-cyber-danger: #FF5A5F;
+  --color-cyber-glow:   #00E5FF;
+}
+
+/* ─── GLOBAL BASE ─────────────────────────────────────────────────────────── */
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    background-color: #090B12;
+    color: #FFFFFF;
+    margin: 0;
+    overflow-x: hidden;
+    min-height: 100vh;
+
+    /* Cinematic deep navy gradient with soft glow orbs */
+    background-image:
+      radial-gradient(ellipse 80% 60% at 20% 0%,   rgba(0,229,255,0.06)  0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 80% 100%, rgba(255,200,87,0.05) 0%, transparent 55%),
+      radial-gradient(ellipse 100% 80% at 50% 50%, rgba(0,0,0,0.4)       0%, transparent 80%),
+      linear-gradient(160deg, #090B12 0%, #0D1220 50%, #111827 100%);
+    background-attachment: fixed;
+  }
+
+  /* Vignette overlay (handled via App.tsx pseudo element hack-free) */
+  #root {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin: 0;
+    border: none;
+    text-align: left;
+    position: relative;
+  }
+
+  /* Subtle noise texture overlay on root */
+  #root::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+}
+
+/* ─── GLASS PANEL UTILITIES ───────────────────────────────────────────────── */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.glass-panel-cyan {
+  background: rgba(0, 229, 255, 0.04);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid rgba(0, 229, 255, 0.15);
+  box-shadow:
+    0 0 24px rgba(0, 229, 255, 0.08),
+    0 4px 24px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(0, 229, 255, 0.08);
+}
+
+.glass-panel-gold {
+  background: rgba(255, 200, 87, 0.04);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid rgba(255, 200, 87, 0.2);
+  box-shadow:
+    0 0 24px rgba(255, 200, 87, 0.08),
+    0 4px 24px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 200, 87, 0.06);
+}
+
+.glass-panel-hover {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.glass-panel-hover:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(0, 229, 255, 0.2);
+  box-shadow:
+    0 0 20px rgba(0, 229, 255, 0.08),
+    0 8px 32px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* ─── BUTTON UTILITIES ────────────────────────────────────────────────────── */
+.btn-primary {
+  background: linear-gradient(135deg, #00C8E8 0%, #00E5FF 50%, #00C8E8 100%);
+  background-size: 200% 100%;
+  color: #090B12;
+  font-weight: 800;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 28px;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.25), 0 4px 12px rgba(0,0,0,0.3);
+  position: relative;
+  overflow: hidden;
+}
+.btn-primary:hover {
+  background-position: 100% 0;
+  transform: translateY(-1px);
+  box-shadow: 0 0 30px rgba(0, 229, 255, 0.4), 0 8px 20px rgba(0,0,0,0.4);
+}
+.btn-primary:active { transform: scale(0.97); }
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 60%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.4s ease;
+}
+.btn-primary:hover::after { left: 150%; }
+
+.btn-gold {
+  background: linear-gradient(135deg, #E8A800 0%, #FFC857 50%, #E8A800 100%);
+  background-size: 200% 100%;
+  color: #090B12;
+  font-weight: 800;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 28px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 0 20px rgba(255,200,87,0.25), 0 4px 12px rgba(0,0,0,0.3);
+}
+.btn-gold:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 30px rgba(255,200,87,0.4), 0 8px 20px rgba(0,0,0,0.4);
+}
+.btn-gold:active { transform: scale(0.97); }
+
+.btn-danger {
+  background: rgba(255,90,95,0.12);
+  color: #FF5A5F;
+  font-weight: 700;
+  border: 1px solid rgba(255,90,95,0.3);
+  border-radius: 12px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn-danger:hover {
+  background: rgba(255,90,95,0.2);
+  border-color: rgba(255,90,95,0.5);
+  box-shadow: 0 0 16px rgba(255,90,95,0.2);
+}
+
+.btn-ghost {
+  background: rgba(255,255,255,0.05);
+  color: #94A3B8;
+  font-weight: 600;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 10px 18px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.btn-ghost:hover {
+  background: rgba(255,255,255,0.09);
+  color: #FFFFFF;
+  border-color: rgba(255,255,255,0.14);
+}
+
+/* ─── TEXT GLOW UTILITIES ─────────────────────────────────────────────────── */
+.text-glow-cyan {
+  text-shadow: 0 0 12px rgba(0, 229, 255, 0.7), 0 0 24px rgba(0, 229, 255, 0.3);
+}
+.text-glow-gold {
+  text-shadow: 0 0 12px rgba(255, 200, 87, 0.7), 0 0 24px rgba(255, 200, 87, 0.3);
+}
+.text-glow-accent { text-shadow: 0 0 10px rgba(0, 229, 255, 0.5); }
+.text-glow-neon   { text-shadow: 0 0 10px rgba(0, 229, 255, 0.5); }
+
+/* ─── BADGE / CHIP UTILITIES ──────────────────────────────────────────────── */
+.badge-cyan {
+  display: inline-flex; align-items: center;
+  background: rgba(0,229,255,0.1);
+  border: 1px solid rgba(0,229,255,0.25);
+  color: #00E5FF;
+  font-weight: 700; font-size: 10px; letter-spacing: 0.8px;
+  padding: 3px 9px; border-radius: 20px;
+  text-transform: uppercase;
+}
+.badge-gold {
+  display: inline-flex; align-items: center;
+  background: rgba(255,200,87,0.1);
+  border: 1px solid rgba(255,200,87,0.25);
+  color: #FFC857;
+  font-weight: 700; font-size: 10px; letter-spacing: 0.8px;
+  padding: 3px 9px; border-radius: 20px;
+  text-transform: uppercase;
+}
+.badge-danger {
+  display: inline-flex; align-items: center;
+  background: rgba(255,90,95,0.1);
+  border: 1px solid rgba(255,90,95,0.25);
+  color: #FF5A5F;
+  font-weight: 700; font-size: 10px; letter-spacing: 0.8px;
+  padding: 3px 9px; border-radius: 20px;
+  text-transform: uppercase;
+}
+.badge-green {
+  display: inline-flex; align-items: center;
+  background: rgba(52,211,153,0.1);
+  border: 1px solid rgba(52,211,153,0.3);
+  color: #34D399;
+  font-weight: 700; font-size: 10px; letter-spacing: 0.8px;
+  padding: 3px 9px; border-radius: 20px;
+  text-transform: uppercase;
+}
+
+/* ─── DIVIDER ─────────────────────────────────────────────────────────────── */
+.divider { border: none; border-top: 1px solid rgba(255,255,255,0.06); margin: 0; }
+
+/* ─── SCROLLBAR ───────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: rgba(9,11,18,0.5); }
+::-webkit-scrollbar-thumb { background: rgba(0,229,255,0.2); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(0,229,255,0.4); }
+
+/* ─── GLOW BOX SHADOWS ────────────────────────────────────────────────────── */
+.glow-cyan { box-shadow: 0 0 20px rgba(0,229,255,0.25), 0 0 40px rgba(0,229,255,0.1); }
+.glow-gold { box-shadow: 0 0 20px rgba(255,200,87,0.25), 0 0 40px rgba(255,200,87,0.1); }
+.ring-cyan  { outline: 2px solid rgba(0,229,255,0.5); outline-offset: 2px; }
+
+/* ─── ANIMATED PARTICLES (pseudo CSS shimmer) ─────────────────────────────── */
+@keyframes float-particle {
+  0%, 100% { transform: translateY(0px) translateX(0px); opacity: 0.2; }
+  33%       { transform: translateY(-12px) translateX(5px); opacity: 0.5; }
+  66%       { transform: translateY(-6px) translateX(-8px); opacity: 0.3; }
+}
+.particle {
+  position: absolute; border-radius: 50%; pointer-events: none;
+  animation: float-particle linear infinite;
+}
+
+/* ─── TIMER RING ──────────────────────────────────────────────────────────── */
+@keyframes timer-dash {
+  from { stroke-dashoffset: 0; }
+  to   { stroke-dashoffset: 175.9; }
+}
+.timer-ring-animate { animation: timer-dash linear forwards; }
+
+/* ─── TURN PULSE ──────────────────────────────────────────────────────────── */
+@keyframes turn-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0,229,255,0.4); }
+  50%       { box-shadow: 0 0 0 8px rgba(0,229,255,0); }
+}
+.turn-pulse { animation: turn-pulse 1.8s ease-in-out infinite; }
+
+/* ─── SHIMMER LOADING ─────────────────────────────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+.shimmer {
+  background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* ─── NO SCROLLBAR ────────────────────────────────────────────────────────── */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ─── FORM INPUTS ─────────────────────────────────────────────────────────── */
+.input-dark {
+  width: 100%;
+  background: rgba(9,11,18,0.6);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 12px;
+  padding: 11px 16px;
+  color: #FFFFFF;
+  font-size: 14px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  outline: none;
+}
+.input-dark:focus {
+  border-color: rgba(0,229,255,0.5);
+  box-shadow: 0 0 0 3px rgba(0,229,255,0.08), inset 0 0 8px rgba(0,229,255,0.03);
+}
+.input-dark::placeholder { color: #475569; }
+.input-dark.pl-10 { padding-left: 40px !important; }
+
+/* ─── FELT TABLE ──────────────────────────────────────────────────────────── */
+.felt-table {
+  background:
+    radial-gradient(ellipse at center, rgba(5,40,20,0.6) 0%, rgba(2,20,10,0.8) 100%);
+  border: 1px solid rgba(0,229,255,0.12);
+  box-shadow:
+    inset 0 0 60px rgba(0,0,0,0.6),
+    inset 0 0 30px rgba(0,229,255,0.04),
+    0 0 40px rgba(0,229,255,0.06),
+    0 8px 48px rgba(0,0,0,0.6);
+}

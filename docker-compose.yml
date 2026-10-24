@@ -1,0 +1,96 @@
+version: '3.8'
+
+services:
+  laravel:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: domino-laravel
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./backend:/var/www
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - domino-network
+
+  reverb:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: domino-reverb
+    restart: unless-stopped
+    working_dir: /var/www
+    command: php artisan reverb:start --host=0.0.0.0 --port=8080
+    volumes:
+      - ./backend:/var/www
+    depends_on:
+      - laravel
+    networks:
+      - domino-network
+
+  queue:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: domino-queue
+    restart: unless-stopped
+    working_dir: /var/www
+    command: php artisan queue:work --sleep=3 --tries=3
+    volumes:
+      - ./backend:/var/www
+    depends_on:
+      - laravel
+    networks:
+      - domino-network
+
+  mysql:
+    image: mysql:8.0
+    container_name: domino-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: domino
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    ports:
+      - "3306:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      - domino-network
+
+  redis:
+    image: redis:alpine
+    container_name: domino-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - domino-network
+
+  nginx:
+    image: nginx:alpine
+    container_name: domino-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./backend:/var/www
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - laravel
+      - reverb
+    networks:
+      - domino-network
+
+networks:
+  domino-network:
+    driver: bridge
+
+volumes:
+  dbdata:
+    driver: local
